@@ -74,7 +74,13 @@
     <!-- Saqlanganlar -->
     <el-divider />
     <div v-if="xodimlar.length > 0">
-      <h3 class="text-lg font-semibold mb-2">📋 Saqlangan xodimlar</h3>
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg font-semibold">📋 Saqlangan xodimlar</h3>
+        <el-button type="danger" plain @click="tozalash">
+          🧹 Barcha ma'lumotlarni o‘chirish
+        </el-button>
+      </div>
+
       <el-table :data="xodimlar" border stripe>
         <el-table-column prop="ism" label="Ism" width="150" />
         <el-table-column prop="umumiyYil" label="Ekv. yil" width="120" />
@@ -115,7 +121,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const ism = ref('')
 const natija = ref('')
@@ -185,6 +191,31 @@ function ochirish(index, row) {
     duration: 2500,
     offset: 60
   })
+}
+
+function tozalash() {
+  ElMessageBox.confirm(
+    "Barcha saqlangan ma'lumotlarni o‘chirishni istaysizmi?",
+    'Tasdiqlash',
+    {
+      confirmButtonText: 'Ha, o‘chir',
+      cancelButtonText: 'Bekor qilish',
+      type: 'warning'
+    }
+  )
+    .then(() => {
+      localStorage.clear()
+      xodimlar.value = []
+      ElMessage({
+        message: '🧹 Barcha maʼlumotlar o‘chirildi!',
+        type: 'success',
+        duration: 2500,
+        offset: 60
+      })
+    })
+    .catch(() => {
+      ElMessage.info('❎ O‘chirish bekor qilindi.')
+    })
 }
 </script>
 
